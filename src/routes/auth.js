@@ -3,8 +3,8 @@ var router = express.Router();
 const bcrypt = require('bcrypt');
 const { PrismaClient } = require("@prisma/client");
 const jwt = require('jsonwebtoken');
+const prisma = new PrismaClient();
 
-const prisma = new PrismaClient()
 
 router.post('/signUp', async (req, res) =>
 {
@@ -47,7 +47,6 @@ router.post('/login', async (req, res) =>
 {
   try {
     const { email, password } = req.body;
-    console.log(password,'pass');
       const user = await prisma.user.findUnique({
         where: {
           email:email
@@ -58,7 +57,6 @@ router.post('/login', async (req, res) =>
           password:true,
         },
       })
-      console.log(user,'user');
       if (!user)
       {
         return res.status(404).json({status:false,message:'User not found'})
