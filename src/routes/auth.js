@@ -17,29 +17,27 @@ router.post('/signUp', async (req, res) =>
   }
   if (email && name && password)
   {
-     userSignUp = await prisma.user.create({
-      data: {
-        name: name,
-      email: email,
-      password: hashedPassword,
-     }
-    })
+    try {
+      userSignUp = await prisma.user.create({
+        data: {
+          name: name,
+          email: email,
+          password: hashedPassword,
+        }
+      });
+    return res.status(200).json({status:true, message: 'User created successfully',data:userSignUp });
+    } catch (error) {
+      return res.status(400).json({
+        status: false,
+        message: 'Unable to sign up',
+        error: error.message
+      });
+    }
+ 
   } else
   {
     return res.status(400).json({status:false, message: 'Unable to sign up' });
 }
-
-  if (userSignUp)
-  {
-    return res.status(200).json({status:true, message: 'User created successfully',data:userSignUp });
-  } else
-  {
-    return res.status(400).json({
-      status: false,
-      message: 'Unable to sign up'
-    });
-    
-  }
 
 });
 
@@ -65,7 +63,7 @@ router.post('/login', async (req, res) =>
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (!passwordMatch)
       {
-        return res.status(401).json({status:false,message:'Authentication failed'})
+        return res.status(401).json({ status: false, message: 'Authentication failed' });
       }
     const accesstoken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '2000s' });
     const refreshToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '7d' });
