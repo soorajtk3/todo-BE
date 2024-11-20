@@ -67,9 +67,12 @@ router.post('/login', async (req, res) =>
       {
         return res.status(401).json({status:false,message:'Authentication failed'})
       }
-    const token = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '2000s' })
+    const accesstoken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '2000s' });
+    const refreshToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '7d' });
+
+
    
-      return res.status(200).json({status:true,token,data:{name:user.name,email:user.email} ,message:'Login success' });
+      return res.status(200).json({status:true,accesstoken,refreshToken,data:{name:user.name,email:user.email} ,message:'Login success' });
   } catch (error) {
     res.status(500).json({status:false,message:"Login failed"})
   }
