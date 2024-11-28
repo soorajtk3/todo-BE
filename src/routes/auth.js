@@ -5,7 +5,6 @@ const { PrismaClient } = require("@prisma/client");
 const jwt = require('jsonwebtoken');
 const prisma = new PrismaClient();
 
-
 router.post('/signUp', async (req, res) =>
 {
   
@@ -65,20 +64,35 @@ router.post('/login', async (req, res) =>
       {
         return res.status(401).json({ status: false, message: 'Authentication failed' });
       }
-    const accesstoken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '2000s' });
-    const refreshToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '7d' });
+    const accessToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '1000s' });
+    const refreshToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '2d' });
 
 
    
-      return res.status(200).json({status:true,accesstoken,refreshToken,data:{name:user.name,email:user.email} ,message:'Login success' });
+      return res.status(200).json({status:true,data:{name:user.name,email:user.email,accessToken,refreshToken,} ,message:'Login success' });
   } catch (error) {
     res.status(500).json({status:false,message:"Login failed"})
   }
- 
 
-  
- 
 })
+
+router.post('/refreshToken', (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    return res.status(400).json({ status: false, message: 'Refresh token is required' });
+  }
+
+  jwt.verify(refreshToken, 'SECRET_KEY', (err, user) => {
+    if (err) {
+      return res.status(403).json({ status: false, message: 'Invalid or expired refresh token' });
+    }
+
+     const accessToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '1000s' });
+    const refreshToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '2d' });
+
+    res.status(200).json({ status: true, data: { accessToken, refreshToken }, message: 'Token refreshed successfully' });
+  });
+});
 
 module.exports = router;
 
