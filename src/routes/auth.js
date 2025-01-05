@@ -64,7 +64,7 @@ router.post('/login', async (req, res) =>
       {
         return res.status(401).json({ status: false, message: 'Authentication failed' });
       }
-    const accessToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '1000s' });
+    const accessToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '60s' });
     const refreshToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '2d' });
 
 
@@ -87,7 +87,7 @@ router.post('/refreshToken', (req, res) => {
       return res.status(403).json({ status: false, message: 'Invalid or expired refresh token' });
     }
 
-     const accessToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '1000s' });
+     const accessToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '120s' });
     const refreshToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '2d' });
 
     res.status(200).json({ status: true, data: { accessToken, refreshToken }, message: 'Token refreshed successfully' });
