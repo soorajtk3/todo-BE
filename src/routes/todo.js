@@ -18,7 +18,7 @@ router.get('/',async (req, res) =>
   }
     
   );
-  res.status(200).json({status:true, message: 'Fetched Todos',todo});
+  res.status(200).json({status:true, message: 'Fetched Todos',data:todo});
 });
 
 router.post('/', async (req, res) =>
