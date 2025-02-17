@@ -45,15 +45,11 @@ router.post('/login', async (req, res) =>
   try {
     const { email, password } = req.body;
       const user = await prisma.user.findUnique({
-        where: {
-          email:email
-        },
-        select: {
-          email: true,
-          name: true,
-          password:true,
-        },
+        where: { 
+          email: email 
+        } 
       })
+
       if (!user)
       {
         return res.status(404).json({status:false,message:'User not found'})
@@ -66,10 +62,8 @@ router.post('/login', async (req, res) =>
       }
     const accessToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '60s' });
     const refreshToken = jwt.sign({ username: user.name }, 'SECRET_KEY', { expiresIn: '2d' });
-
-
-   
-      return res.status(200).json({status:true,data:{name:user.name,email:user.email,accessToken,refreshToken,} ,message:'Login success' });
+const userData = {name:user.name,email:user.email,userId:user.id}
+      return res.status(200).json({status:true,data:{userData,accessToken,refreshToken,} ,message:'Login success' });
   } catch (error) {
     res.status(500).json({status:false,message:"Login failed"})
   }

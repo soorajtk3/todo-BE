@@ -28,7 +28,7 @@ router.post('/', async (req, res) =>
     data: {
       title: title,
       isDone: false,
-      userId:userId
+      userId:parseInt(userId)
     }
    
   })
