@@ -6,9 +6,26 @@ const prisma = new PrismaClient();
 
 
 /* GET Todo listing. */
-router.get('/',async (req, res) =>
+router.get('/',VerifyToken,async (req, res) =>
 {
+
+  let userDetails;
+  
+  const user = await prisma.user.findFirst({
+    where: {
+
+      name: req.user.username
+    }
+  });
+  if (user)
+    {
+      userDetails = {name:user.name,email:user.email,userId:user.id}
+      }
+
   const todo = await prisma.todo.findMany({
+    where: {
+      userId:userDetails.userId
+    },
     select: {
       id: true,
       userId: true,
