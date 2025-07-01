@@ -30,7 +30,7 @@ router.get('/',VerifyToken,async (req, res) =>
       id: true,
       userId: true,
       title: true,
-      isDone:true,
+      status:true
     }
   }
     
@@ -44,7 +44,7 @@ router.post('/', async (req, res) =>
   const createTodo = await prisma.todo.create({
     data: {
       title: title,
-      isDone: false,
+      status: 'TODO',
       userId:parseInt(userId)
     }
    

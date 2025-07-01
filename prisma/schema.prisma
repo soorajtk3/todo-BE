@@ -24,9 +24,15 @@ model User {
 model Todo {
   id        Int      @id @default(autoincrement())
   title     String
-  isDone    Boolean  @default(false)  
+   status    Status   @default(TODO) 
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt  
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
+}
+
+enum Status {
+  TODO
+  IN_PROGRESS
+  DONE
 }
