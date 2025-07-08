@@ -19,6 +19,7 @@ model User {
   name    String
   password String
   todos   Todo[]
+  isVerified Boolean    @default(false)
 }
 
 model Todo {
